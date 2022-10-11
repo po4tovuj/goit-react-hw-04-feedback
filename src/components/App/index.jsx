@@ -1,16 +1,71 @@
 import React, { Component } from 'react';
-import Statistics from 'components/Statistics';
+import { Statistics } from 'components/Statistics';
 import { Section } from 'components/Section';
 import { Notification } from 'components/Notifications';
 import { Container } from './App.styled';
 import { FeedbackOptions } from 'components/FeedbackOptions';
+import { useState } from 'react';
+import { useEffect } from 'react';
 const INITIAL_STATE = {
   good: 0,
   neutral: 0,
   bad: 0,
 };
 const OPTIONS = ['good', 'neutral', 'bad'];
-export class App extends Component {
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const [statistics, setStatistics] = useState(null);
+  const [positivePercentage, setPositivePercentage] = useState('0%');
+  const handleLeaveFeedback = e => {
+    const { name } = e.currentTarget;
+
+    switch (name) {
+      case 'good':
+        setGood(state => state + 1);
+        break;
+      case 'neutral':
+        setNeutral(state => state + 1);
+        break;
+      default:
+        setBad(state => state + 1);
+
+        break;
+    }
+  };
+  useEffect(() => {
+    const amount = good + bad + neutral;
+    const positive = ((good * 100) / amount).toFixed(2) + '%';
+    setPositivePercentage(positive);
+    setStatistics(amount);
+  }, [good, bad, neutral]);
+
+  return (
+    <Container>
+      <Section title="Please leave feedback">
+        <FeedbackOptions
+          options={OPTIONS}
+          onLeaveFeedback={handleLeaveFeedback}
+        />
+      </Section>
+      <Section title="Statistics">
+        {statistics ? (
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={statistics}
+            positivePercentage={positivePercentage}
+          />
+        ) : (
+          <Notification message="There is no feedback" />
+        )}
+      </Section>
+    </Container>
+  );
+};
+export class AppOld extends Component {
   state = {
     ...INITIAL_STATE,
   };
