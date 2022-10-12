@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Statistics } from 'components/Statistics';
+import { Statistics } from 'components/Statistics/Statistics';
 import { Section } from 'components/Section';
-import { Notification } from 'components/Notifications';
+import { Notification } from 'components/Notifications/Notifications';
 import { Container } from './App.styled';
-import { FeedbackOptions } from 'components/FeedbackOptions';
+import { FeedbackOptions } from 'components/FeedbackOptions/FeedBackOptions';
 import { useState } from 'react';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 const INITIAL_STATE = {
   good: 0,
   neutral: 0,
@@ -16,8 +16,6 @@ export const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
-  const [statistics, setStatistics] = useState(null);
-  const [positivePercentage, setPositivePercentage] = useState('0%');
   const handleLeaveFeedback = e => {
     const { name } = e.currentTarget;
 
@@ -34,12 +32,6 @@ export const App = () => {
         break;
     }
   };
-  useEffect(() => {
-    const amount = good + bad + neutral;
-    const positive = ((good * 100) / amount).toFixed(2) + '%';
-    setPositivePercentage(positive);
-    setStatistics(amount);
-  }, [good, bad, neutral]);
 
   return (
     <Container>
@@ -50,13 +42,15 @@ export const App = () => {
         />
       </Section>
       <Section title="Statistics">
-        {statistics ? (
+        {good + bad + neutral ? (
           <Statistics
             good={good}
             neutral={neutral}
             bad={bad}
-            total={statistics}
-            positivePercentage={positivePercentage}
+            total={good + bad + neutral}
+            positivePercentage={
+              ((good * 100) / (good + bad + neutral)).toFixed(2) + '%'
+            }
           />
         ) : (
           <Notification message="There is no feedback" />

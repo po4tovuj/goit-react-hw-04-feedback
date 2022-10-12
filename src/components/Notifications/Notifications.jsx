@@ -1,4 +1,4 @@
-import { Title } from './Notification.styled';
+import { Title } from './Notifications.styled';
 import PropTypes from 'prop-types';
 
 export const Notification = ({ message = '' }) => <Title>{message}</Title>;
